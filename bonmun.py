@@ -24,13 +24,15 @@ def wrap_text(text, max_length):
 
     return '\n'.join(lines)
 
-qwerqwer = '학습할 본문을 선택해주세요.\n\n< 선택 가능 본문 목록 >'
-qwerqwer += '\n((9B)) The Power Of Writing'
-tt.write(qwerqwer, font=("Arial", 16, 'bold'), align="center")
+qwerqwer = '학습할 본문을 선택해주세요.\n*괄호 안의 파일명만 입력\n\n< 선택 가능 본문 목록 >'
+qwerqwer += '\n((20)) Guns and Video Games-Looking for a culprit'
+qwerqwer += '\n((6A)) QUICKSILVER' #파일 추가 시 수정해야 하는 부분
+tt.goto(0, 0)
+tt.write(qwerqwer, font=("Noto Sans KR", 16, 'bold'), align='center')
 tt.goto(0, -50)
 while True:
     selection = input(">>")
-    if selection in ['9B']: break
+    if selection.upper in ['20', '6A']: break #파일 추가 시 수정해야 하는 부분
     tt.write('존재하지 않습니다.', font=("한컴 윤고딕 720", 12), align='center')
 
 #작업 디렉토리 현 주소로 설정
@@ -81,9 +83,9 @@ def binkan(text):
 def write_gosu():
     tt.clear()
     tt.goto(0, 50)#참고: 여기서 사용된 i는 아래 for문의 임시변수로, 다른 코드에서 임시변수 i를 사용할 수 없습니다.
-    tt.write(wrap_text(content[2*i+1], 25), font=("한컴 윤고딕 760", 16, "bold"), align='center')
+    tt.write(wrap_text(content[2*i+1], 25), font=("Arial", 16, "bold"), align='center')
     tt.goto(0, -150)
-    tt.write(wrap_text(processed, 40), font=('한컴 윤고딕 760', 16, 'bold'), align='center')
+    tt.write(wrap_text(processed, 40), font=('Arial', 16, 'bold'), align='center')
 
 for i in range(len(content)//2):
     print("{}/{}번째 문장".format(i+1, len(content)//2))
