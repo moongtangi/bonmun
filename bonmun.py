@@ -27,13 +27,14 @@ def wrap_text(text, max_length):
 qwerqwer = '학습할 본문을 선택해주세요.\n*괄호 안의 파일명만 입력\n\n< 선택 가능 본문 목록 >'
 qwerqwer += '\n((20)) Guns and Video Games-Looking for a culprit'
 qwerqwer += '\n((6A)) QUICKSILVER' 
-qwerqwer += '\n((6B)) Building the Ark' #파일 추가 시 수정해야 하는 번호
+qwerqwer += '\n((6B)) Building the Ark' 
+qwerqwer += '\n((8)) “New Europe” Goes Global' #파일 추가 시 수정해야 하는 번호
 tt.goto(0, 0)
 tt.write(qwerqwer, font=("Noto Sans KR", 16, 'bold'), align='center')
 tt.goto(0, -50)
 while True:
     selection = input(">>")
-    if selection.upper() in ['20', '6A', '6B']: break #파일 추가 시 수정해야 하는 번호
+    if selection.upper() in ['20', '6A', '6B', '8']: break #파일 추가 시 수정해야 하는 번호
 tt.write('존재하지 않습니다.', font=("한컴 윤고딕 720", 12), align='center')
 
 #작업 디렉토리 현 주소로 설정
