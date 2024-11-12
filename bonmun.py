@@ -115,37 +115,52 @@ def write_gosu():
     tt.goto(0, -150)
     tt.write(wrap_text(processed, 40), font=('Arial', 16, 'bold'), align='center')
 
-for i in range(len(content)//2):
-    print("{}/{}번째 문장".format(i+1, len(content)//2))
-    processed, real_binkan = binkan(content[2*i])
-    hint = 0; opened_hint=[]
-    hint_word = ('[-] ' * len(real_binkan[0]))[:-1]
-    will_opened_hint = list(range(len(real_binkan[0])))
-    write_gosu()
-    dap = input('>>')
-    while True:
-        if hint < len(real_binkan[0]):
-            qwerqwer = random.choice(will_opened_hint)
-            will_opened_hint.remove(qwerqwer)
-            opened_hint.append(qwerqwer)
-            for k in opened_hint:
-                hint_word = list(hint_word)
-                hint_word[4*k+1] = real_binkan[0][k]
-                hint_word = ''.join(hint_word)
-
-        tt.color('red')
-        hint += 1
-        if dap.lower() == real_binkan[0].lower():
-            processed = processed.replace('[-]', real_binkan[0], 1)
-            del real_binkan[0]
-            tt.color('green')
-            if len(real_binkan) == 0: break
-            hint = 0; opened_hint = []
-            hint_word = ('[-] ' * len(real_binkan[0]))[:-1]
-            will_opened_hint = list(range(len(real_binkan[0])))
+i = int(0)
+senten = 0
+idong = 1
+while idong:
+    idong = 0
+    for i in range(len(content)//2 - senten):
+        print("{}/{}번째 문장".format(i+1+senten, len(content)//2))
+        processed, real_binkan = binkan(content[2*(i +senten)])
+        hint = 0; opened_hint=[]
+        hint_word = ('[-] ' * len(real_binkan[0]))[:-1]
+        will_opened_hint = list(range(len(real_binkan[0])))
         write_gosu()
-
-        if hint > 0:
-            tt.goto(0, 220)
-            tt.write('힌트: ' + str(hint_word), font=("한컴 윤고딕 720", 12), align='center')
         dap = input('>>')
+        while True:
+            if hint < len(real_binkan[0]):
+                qwerqwer = random.choice(will_opened_hint)
+                will_opened_hint.remove(qwerqwer)
+                opened_hint.append(qwerqwer)
+                for k in opened_hint:
+                    hint_word = list(hint_word)
+                    hint_word[4*k+1] = real_binkan[0][k]
+                    hint_word = ''.join(hint_word)
+
+            tt.color('red')
+            hint += 1
+            if dap.startswith(". "):
+                if dap[2:].isdigit() and int(dap[2:]) <= int(len(content)//2):
+                    senten = int(dap[2:]) - 1
+                    idong = 1
+                    tt.color('black')
+                    break
+                else:
+                    print('문장숫자가 이상하잖어')
+            elif dap.lower() == real_binkan[0].lower():
+                processed = processed.replace('[-]', real_binkan[0], 1)
+                del real_binkan[0]
+                tt.color('green')
+                if len(real_binkan) == 0: break
+                hint = 0; opened_hint = []
+                hint_word = ('[-] ' * len(real_binkan[0]))[:-1]
+                will_opened_hint = list(range(len(real_binkan[0])))
+            write_gosu()
+
+            if hint > 0:
+                tt.goto(0, 220)
+                tt.write('힌트: ' + str(hint_word), font=("한컴 윤고딕 720", 12), align='center')
+            dap = input('>>')
+        if idong:
+            break
