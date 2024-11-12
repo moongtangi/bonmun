@@ -7,7 +7,7 @@ tt.penup()
 tt.hideturtle()
 tt.speed(0)
 
-#자동 줄바꿈 함수
+# 가로 줄바기버기 함수
 def wrap_text(text, max_length):
     words = text.split()
     lines = []
@@ -26,25 +26,32 @@ def wrap_text(text, max_length):
 
 qwerqwer = '학습할 본문을 선택해주세요.\n*괄호 안의 파일명만 입력\n\n< 선택 가능 본문 목록 >'
 qwerqwer += '\n((20)) Guns and Video Games-Looking for a culprit'
-qwerqwer += '\n((6A)) QUICKSILVER' #파일 추가 시 수정해야 하는 부분
+qwerqwer += '\n((6A)) QUICKSILVER' 
+qwerqwer += '\n((6B)) Building the Ark' #파일 추가 시 수정해야 하는 번호
 tt.goto(0, 0)
 tt.write(qwerqwer, font=("Noto Sans KR", 16, 'bold'), align='center')
 tt.goto(0, -50)
 while True:
     selection = input(">>")
-    if selection.upper in ['20', '6A']: break #파일 추가 시 수정해야 하는 부분
-    tt.write('존재하지 않습니다.', font=("한컴 윤고딕 720", 12), align='center')
+    if selection.upper() in ['20', '6A', '6B']: break #파일 추가 시 수정해야 하는 번호
+tt.write('존재하지 않습니다.', font=("한컴 윤고딕 720", 12), align='center')
 
 #작업 디렉토리 현 주소로 설정
 nowdir = os.path.abspath(os.path.dirname(__file__))
 os.chdir(nowdir)
 print("Now Loading in second... {}".format(nowdir))
 
-#파일 읽어들이기
-selection += '.txt'
-file = open(selection, encoding='UTF8')
+#폴더 읽어들이기
+selection_path = os.path.join(selection, 'content.txt')
+file = open(selection_path, encoding='UTF8')
 content = file.read()
 content = content.split('\n')
+file.close()
+
+blank_path = os.path.join(selection, 'blank.txt')
+file = open(blank_path, encoding='UTF8')
+blank_content = file.read()
+blank_content = blank_content.split('\n')
 file.close()
 
 file = open('exception.txt', encoding='UTF8')
@@ -57,32 +64,52 @@ print("*"*30)
 
 tt.goto(0, 0)
 tt.clear()
-tt.write('난이도를 선택해주세요.\n(1-3 or Z(전부 빈칸), default=2)', font=("한컴 윤고딕 760", 16, "bold"), align='center')
+tt.write('난이도를 선택해주세요.\n(1-3 or Z(전부 빈칸), or isu(이수진 빈칸) default=2)', font=("한컴 윤고딕 760", 16, "bold"), align='center')
 difficulty = input('>>')
-if difficulty not in ['1', '2', '3', 'Z']: difficulty = 2
+if difficulty not in ['1', '2', '3', 'Z', 'isu']: difficulty = 2
 elif difficulty == 'Z': difficulty = 4
-else: difficulty = int(difficulty)
-difficulty = [1] + [0] * (4 - difficulty)
+elif difficulty != 'isu' : difficulty = int(difficulty)
+if isinstance(difficulty, int): difficulty = [1] + [0] * (4 - difficulty)
 
-#자동 빈칸 함수
+# 자동 빈칸 함수
 def binkan(text):
-    words = text.split()
     replaced, result = [], []
-    while True:
-        for word in words:
-            if random.choice(difficulty) and word not in exxp:
-                p_word = word.strip(string.punctuation)
-                word = word.replace(p_word, '[-]')
-                replaced.append(p_word)
-            else: p_word = word
-            result.append(word)
-        if len(replaced): break
+
+    if difficulty == 'isu':
+        # blank_content와 text를 비교하여 빈칸 설정
+        blank_words = blank_content[2 * i].split()
+        context_words = text.split()
+        
+        # blank.txt에 없는 단어를 빈칸으로 설정
+        j = 0
+        for context_word in context_words:
+            if j < len(blank_words) and context_word.lstrip(string.punctuation).rstrip(string.punctuation) == blank_words[j].lstrip(string.punctuation).rstrip(string.punctuation):
+                result.append(context_word)
+                j += 1
+            else:
+                replaced.append(context_word.lstrip(string.punctuation).rstrip(string.punctuation))
+                result.append('[-]')
+        
+    else:
+        # 기존 빈칸 로직 사용
+        words = text.split()
+
+        while True:
+            for word in words:
+                if random.choice(difficulty) and word not in exxp:
+                    p_word = word.strip(string.punctuation)
+                    word = word.replace(p_word, '[-]')
+                    replaced.append(p_word)
+                result.append(word)
+            if len(replaced):
+                break
+
     return ' '.join(result), replaced
 
-#유저 인터페이스
+# 유저 인터페이스
 def write_gosu():
     tt.clear()
-    tt.goto(0, 50)#참고: 여기서 사용된 i는 아래 for문의 임시변수로, 다른 코드에서 임시변수 i를 사용할 수 없습니다.
+    tt.goto(0, 50) #참고: 여기서 사용된 i는 아래 for문의 임시변수로, 다른 코드에서 임시변수 i를 사용할 수 없습니다.
     tt.write(wrap_text(content[2*i+1], 25), font=("Arial", 16, "bold"), align='center')
     tt.goto(0, -150)
     tt.write(wrap_text(processed, 40), font=('Arial', 16, 'bold'), align='center')
